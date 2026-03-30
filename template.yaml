@@ -30,4 +30,49 @@ Resources:
 
           def handler(event, context):
               for record in event['Records']:
-                  file_name = record['s3
+                  file_name = record['s3']['object']['key']
+
+                  table.put_item(
+                      Item={
+                          'id': file_name
+                      }
+                  )
+
+              return {
+                  "statusCode": 200,
+                  "body": "File processed"
+              }
+
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref UploadsTable
+
+  UploadsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "UploadsTable-${Environment}"
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+
+  S3InvokeLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref UploadsLambda
+      Action: lambda:InvokeFunction
+      Principal: s3.amazonaws.com
+      SourceArn: !GetAtt UploadsBucket.Arn
+
+  UploadsBucket:
+    Type: AWS::S3::Bucket
+    DependsOn: S3InvokeLambdaPermission
+    Properties:
+      BucketName: !Sub "uploads-bucket-${Environment}-${AWS::AccountId}"
+      NotificationConfiguration:
+        LambdaConfigurations:
+          - Event: s3:ObjectCreated:Put
+            Function: !GetAtt UploadsLambda.Arn
