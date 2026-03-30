@@ -15,6 +15,10 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: !Sub "uploads-bucket-${Environment}-${AWS::AccountId}"
+      NotificationConfiguration:
+        LambdaConfigurations:
+          - Event: s3:ObjectCreated:Put
+            Function: !GetAtt UploadsLambda.Arn
 
   UploadsTable:
     Type: AWS::DynamoDB::Table
@@ -71,12 +75,3 @@ Resources:
       Action: lambda:InvokeFunction
       Principal: s3.amazonaws.com
       SourceArn: !GetAtt UploadsBucket.Arn
-
-  BucketNotification:
-    Type: AWS::S3::BucketNotification
-    Properties:
-      Bucket: !Ref UploadsBucket
-      NotificationConfiguration:
-        LambdaConfigurations:
-          - Event: s3:ObjectCreated:Put
-            Function: !GetAtt UploadsLambda.Arn
