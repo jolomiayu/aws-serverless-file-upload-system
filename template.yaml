@@ -1,0 +1,23 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  Environment:
+    Type: String
+    AllowedValues:
+      - dev
+      - prod
+
+Resources:
+  UploadsLambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Sub "UploadsLambda-${Environment}"
+      Handler: index.handler
+      Runtime: python3.11
+      Role: <LambdaExecutionRoleArn>
+      Code:
+        S3Bucket: <artifact-bucket>
+        S3Key: lambda.zip
+      Environment:
+        Variables:
+          TABLE_NAME: !Sub "UploadsTable-${Environment}"
