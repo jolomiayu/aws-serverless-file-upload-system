@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Project 4 - CI/CD Dev/Prod Lambda Setup
+Description: Project 4 - Serverless File Upload System (Dev/Prod)
 
 Parameters:
   Environment:
@@ -10,6 +10,24 @@ Parameters:
     Default: dev
 
 Resources:
+
+  UploadsBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "uploads-bucket-${Environment}-${AWS::AccountId}"
+
+  UploadsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "UploadsTable-${Environment}"
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+
   UploadsLambda:
     Type: AWS::Lambda::Function
     Properties:
@@ -20,12 +38,45 @@ Resources:
 
       Code:
         ZipFile: |
+          import json
+          import boto3
+          import os
+
+          dynamodb = boto3.resource('dynamodb')
+          table = dynamodb.Table(os.environ['TABLE_NAME'])
+
           def handler(event, context):
+              for record in event['Records']:
+                  file_name = record['s3']['object']['key']
+
+                  table.put_item(
+                      Item={
+                          'id': file_name
+                      }
+                  )
+
               return {
                   "statusCode": 200,
-                  "body": "Hello from Lambda (${Environment})"
+                  "body": "File processed"
               }
 
       Environment:
         Variables:
-          TABLE_NAME: !Sub "UploadsTable-${Environment}"
+          TABLE_NAME: !Ref UploadsTable
+
+  S3InvokeLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref UploadsLambda
+      Action: lambda:InvokeFunction
+      Principal: s3.amazonaws.com
+      SourceArn: !GetAtt UploadsBucket.Arn
+
+  BucketNotification:
+    Type: AWS::S3::BucketNotification
+    Properties:
+      Bucket: !Ref UploadsBucket
+      NotificationConfiguration:
+        LambdaConfigurations:
+          - Event: s3:ObjectCreated:Put
+            Function: !GetAtt UploadsLambda.Arn
