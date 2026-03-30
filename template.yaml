@@ -1,4 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
+Description: Project 4 - CI/CD Dev/Prod Lambda Setup
 
 Parameters:
   Environment:
@@ -6,6 +7,7 @@ Parameters:
     AllowedValues:
       - dev
       - prod
+    Default: dev
 
 Resources:
   UploadsLambda:
@@ -15,9 +17,15 @@ Resources:
       Handler: index.handler
       Runtime: python3.11
       Role: arn:aws:iam::825765402564:role/LambdaExecutionRole-Project4
+
       Code:
-        S3Bucket: project4-artifacts-jolomi
-        S3Key: lambda.zip
+        ZipFile: |
+          def handler(event, context):
+              return {
+                  "statusCode": 200,
+                  "body": "Hello from Lambda (${Environment})"
+              }
+
       Environment:
         Variables:
           TABLE_NAME: !Sub "UploadsTable-${Environment}"
