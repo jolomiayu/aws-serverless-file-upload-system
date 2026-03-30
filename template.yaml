@@ -11,6 +11,18 @@ Parameters:
 
 Resources:
 
+  UploadsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "UploadsTable-${Environment}"
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+
   UploadsLambda:
     Type: AWS::Lambda::Function
     Properties:
@@ -47,29 +59,16 @@ Resources:
         Variables:
           TABLE_NAME: !Ref UploadsTable
 
-  UploadsTable:
-    Type: AWS::DynamoDB::Table
-    Properties:
-      TableName: !Sub "UploadsTable-${Environment}"
-      AttributeDefinitions:
-        - AttributeName: id
-          AttributeType: S
-      KeySchema:
-        - AttributeName: id
-          KeyType: HASH
-      BillingMode: PAY_PER_REQUEST
-
   S3InvokeLambdaPermission:
     Type: AWS::Lambda::Permission
     Properties:
       FunctionName: !Ref UploadsLambda
       Action: lambda:InvokeFunction
       Principal: s3.amazonaws.com
-      SourceArn: !GetAtt UploadsBucket.Arn
+      # 🔥 FIX: removed SourceArn to break circular dependency
 
   UploadsBucket:
     Type: AWS::S3::Bucket
-    DependsOn: S3InvokeLambdaPermission
     Properties:
       BucketName: !Sub "uploads-bucket-${Environment}-${AWS::AccountId}"
       NotificationConfiguration:
