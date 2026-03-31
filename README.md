@@ -4,7 +4,7 @@
 
 This project demonstrates a fully automated CI/CD pipeline that deploys a serverless file upload system on AWS.
 
-Whenever code is pushed to GitHub, the pipeline automatically builds and deploys infrastructure using CloudFormation.
+Whenever code is pushed to GitHub, the pipeline automatically builds and deploys infrastructure using AWS services.
 
 ---
 
@@ -24,10 +24,10 @@ This project uses a serverless architecture:
 ⚙️ How It Works
 
 1. Code is pushed to GitHub
-2. CodePipeline is triggered automatically
-3. CodeBuild runs buildspec.yml
-4. CloudFormation deploys infrastructure
-5. S3 upload triggers Lambda
+2. AWS CodePipeline is triggered automatically
+3. AWS CodeBuild runs "buildspec.yml"
+4. AWS CloudFormation deploys infrastructure
+5. File upload to S3 triggers Lambda
 6. Lambda stores metadata in DynamoDB
 
 ---
@@ -47,37 +47,38 @@ This project uses a serverless architecture:
 
 CodePipeline
 
-"CodePipeline" (./project-4-screenshots/1-codepipeline.png)
+"CodePipeline" (project-4-screenshots/1-codepipeline.png)
 
 CodeBuild
 
-"CodeBuild" (./project-4-screenshots/2-codebuild.png)
+"CodeBuild" (project-4-screenshots/2-codebuild.png)
 
 CloudFormation
 
-"CloudFormation" (./project-4-screenshots/3-cloudformation.png)
+"CloudFormation" (project-4-screenshots/3-cloudformation.png)
 
 S3 Bucket
 
-"S3" (./project-4-screenshots/4-s3.png)
+"S3" (project-4-screenshots/4-s3.png)
 
 Lambda Function
 
-"Lambda" (./project-4-screenshots/5-lambda.png)
+"Lambda" (project-4-screenshots/5-lambda.png)
 
 DynamoDB Table
 
-"DynamoDB" (./project-4-screenshots/6-dynamodb.png)
+"DynamoDB" (project-4-screenshots/6-dynamodb.png)
 
 ---
 
 📂 Project Structure
 
-.
-├── buildspec.yml
-├── template.yaml
-├── lambda_function.py
-└── README.md
+project-root/
+│── buildspec.yml
+│── template.yaml
+│── lambda_function.py
+│── README.md
+│── project-4-screenshots/
 
 ---
 
