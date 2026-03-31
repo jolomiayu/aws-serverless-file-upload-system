@@ -1,38 +1,40 @@
 🚀 AWS Serverless CI/CD File Upload System
 
-📌 Project Overview
+📌 Overview
 
-This project demonstrates a fully automated CI/CD pipeline that deploys a serverless file upload system on AWS.
+This project showcases a fully automated CI/CD pipeline for deploying a serverless file upload system on AWS.
 
-Whenever code is pushed to GitHub, the pipeline automatically builds and deploys infrastructure using AWS services.
+It demonstrates how modern cloud applications are built using Infrastructure as Code (IaC) and event-driven architecture.
 
 ---
 
 🏗️ Architecture
 
-This project uses a serverless architecture:
+The system is built using AWS serverless services:
 
-- Amazon S3 → stores uploaded files
-- AWS Lambda → processes uploads
-- Amazon DynamoDB → stores metadata
-- AWS CodePipeline → automates deployment
-- AWS CodeBuild → builds the application
-- AWS CloudFormation → provisions infrastructure
+- Amazon S3 – Stores uploaded files
+- AWS Lambda – Processes file uploads
+- Amazon DynamoDB – Stores file metadata
+- AWS CodePipeline – Automates CI/CD workflow
+- AWS CodeBuild – Builds and deploys code
+- AWS CloudFormation – Provisions infrastructure
 
 ---
 
-⚙️ How It Works
+⚙️ Workflow
 
 1. Code is pushed to GitHub
-2. AWS CodePipeline is triggered automatically
-3. AWS CodeBuild runs "buildspec.yml"
+2. AWS CodePipeline is triggered
+3. AWS CodeBuild executes "buildspec.yml"
 4. AWS CloudFormation deploys infrastructure
 5. File upload to S3 triggers Lambda
 6. Lambda stores metadata in DynamoDB
 
+This follows a typical event-driven serverless architecture widely used in production systems citeturn0search3
+
 ---
 
-🛠️ Technologies Used
+🛠️ Tech Stack
 
 - AWS CodePipeline
 - AWS CodeBuild
@@ -84,23 +86,23 @@ project-root/
 
 🎯 Key Features
 
-- Fully automated CI/CD pipeline
+- Automated CI/CD pipeline
 - Infrastructure as Code (CloudFormation)
-- Event-driven serverless architecture
-- Scalable and cost-efficient
+- Event-driven architecture
+- Scalable and cost-efficient system
 
 ---
 
-📈 What I Learned
+📈 Learning Outcomes
 
-- Building CI/CD pipelines on AWS
-- Automating infrastructure deployment
-- Integrating multiple AWS services
-- Real-world DevOps workflow
+- Built a complete CI/CD pipeline on AWS
+- Automated infrastructure deployment
+- Integrated multiple AWS services
+- Implemented real-world DevOps practices
 
 ---
 
 👨‍💻 Author
 
 Jolomi Ayu
-AWS Cloud Engineer (Entry-Level)
+Entry-Level AWS Cloud Engineer
